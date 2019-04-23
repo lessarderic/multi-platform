@@ -1,165 +1,129 @@
 # Multi-Platform Sample Repository
 
-Repository that provides an example of how components can be written to be packaged and deployed
-different ways, i.e., as Spring applications, Docker containers, inside Karaf (OSGi container), etc.
+Repository that provides an example of how components  and services can be written to be packaged
+different ways (e.g., Spring applications, Docker containers, inside Karaf (OSGi container), etc.)
+and deployed to different environments.
 
 The modules have the following overall structure:
 
 ```text
 multi-platform
-+- components
-|  +- quotes
-|  |  +- service-api
-|  |  +- service-impl
-|  +- greetings
-|     +- service-api
-|     +- service-impl
-+- apis
-|  +- quotes
-|  |  +- clients
-|  |  +- server
-|  |  +- pact
-|  +- greetings
++- quotes-api
+|  +- java
+|  +- rest
+|     +- specs
+|     +- docs
 |     +- clients
+|        +- java
 |     +- server
-|     +- pact
-+- distros
+|        +- spring
+|        +- cxf
++- greetings-api
+|  +- java
+|  +- rest
+|     +- specs
+|     +- docs
+|     +- clients
+|        +- java
+|     +- server
+|        +- spring
+|        +- cxf
++- quotes-service
+|  +- service-impl
+|  +- platform-adaptors
+|  |  +- data-access
+|  |     +- in-memory
+|  |     +- cassandra
+|  |     +- relational
+|  +- distros
+|     +- spring
+|     +- docker
+|     +- osgi
++- greetings-service
+|  +- service-impl
+|  +- distros
+|     +- spring
+|     +- docker
+|     +- osgi
++- thirdparty
+|  +- micrometer-osgi
++- sample-deployments
    +- spring
-   |  +- single-app
-   |  +- quotes-app
-   |  +- greetings-app
+   |  +- single-app.jar
    +- docker
-   |  +- quotes-docker
-   |  +- greetings-docker
-   |  +- docker-compose.yml
-   +- osgi
-      +- third-party
-      |  +- micrometer-core
-      +- quotes
-      |  +- quotes-api-bundle
-      |  +- quotes-bundle
-      +- greetings
-      |  +- greetings-api-bundle
-      |  +- greetings-bundle
-      +- greetings-webapp
-         +- greetings-endpoint-bundle
+   |  +- docker-compose.yaml
+   +- karaf
+      +- greetings.kar
 ```
 
-## Components Module
+Except for the `sample-deployments` module, each top-level module represents a separate repository.
+For instance, the `quotes-service` and `greetings-service` would be two distinct GitHub repositories
+that can be built, packaged and deployed on their own.
 
-The `components` sub-modules contain the business logic for the different components of the system.
-These modules are written so they can be reused in different distributions and composed as needed
-using dependency injection. In order to remain deployment independent, they do not assume a
-specific dependency injection framework (Spring, Aries Blueprint, Guice, etc.) will be used to
-wire the components together and do not use any framework specific annotations.
+## API Modules
 
-Standard APIs such as slf4j and micrometer that abstract common tasks such as logging and metrics
-collection are used. No specific implementation is assumed however to allow the components to be
-packaged and deployed to environments that provide different implementations of those common
-services.
+The `quotes-api` and `greetings-api` modules contain the definition for the Java, REST or any other
+APIs exposed by a component or group of components.
 
-The components that need access to persistent storage and messaging (SQL or noSQL databases, caches,
-message brokers, etc.) provide data access objects (DAOs) and adaptors to abstract those away
-and allow distributions to select specific data stores and message brokers based on the
-environment they will be deployed to.
+The Java APIs are defined so clean OSGi bundles can be created from them.
 
-To remain independent of the communication mechanism, the components do not make any assumptions
+The REST APIs are defined using [OpenAPI](https://www.openapis.org/). Client libraries, server
+stubs, static documentation are generated from the OpenAPI specifications. This is also where
+[PACT](https://docs.pact.io/) contract definitions would exist. Those would be used to generate
+test drivers (compliance test kit, or CTK) to validate server implementations, as well as server
+mocks that can be used by client services as server replacements during testing.
+                                             
+> APIs are typically source controlled in their own repository and released independently to
+allow for their version to change independently of the implementation.
+
+## Implementation Modules
+
+Those modules contain the implementation of each service defined in the API Modules.
+They include a `service-impl` module that contains the service's business logic. The code in this
+module is written so it can be reused in different distributions and composed as needed
+using dependency injection. In order to remain deployment independent, it does not assume any
+specific dependency injection framework (Spring, Aries Blueprint, Guice, etc.) and do not use any
+framework specific annotations.
+
+Standard APIs such as slf4j and [Micrometer](https://micrometer.io) that abstract common tasks such
+as logging and metrics collection are used. No specific implementation is assumed however to allow
+the services to be packaged and deployed to environments that provide different implementations of
+those common services.
+
+To remain independent of the communication mechanism, the services do not make any assumptions
 as to how they will be called (e.g., REST, Protobuf or GraphQL endpoint, message queue, OSGi
-service call, etc.). 
+service call, etc.).
 
-Since components are not meant to be deployed directly, these modules do not contain any deployment
-specific files (Spring configuration files, OSGi bundles, Karaf feature files, Dockerfiles, etc.)
-and do not create deployable distributions (e.g., Docker images, OSGi bundles or Kar files, etc.).
-In a continuous delivery environment, their release would not trigger any automated deployments.
+Service implementation modules that need access to persistent storage and messaging (SQL or noSQL
+databases, caches, message brokers, etc.) provide data access objects (DAOs) and adaptors to
+abstract those away in a sub-module under `platform-adaptors`. This allows each distribution to
+select specific data stores and message brokers based on the environment they will be deployed to.
 
-Unit testing is usually sufficient, especially for simple components. For more complex complex
-ones, component level testing could be done in addition by manually wiring the different
-classes part of the component and testing the component as a single unit. It is important to
-remember however that contract and end-to-end testing is performed in the distribution modules.
+The code in these modules also uses [Immutables](https://immutables.org) to simplify the creation of
+immutable classes and objects.
 
 > As a general rule, components that share a common object model and are part of a single
 [Bounded Context](https://www.martinfowler.com/bliki/BoundedContext.html) should be kept in a
 single repository and released together.
 
-## APIs Module
+## Third-Party Modules
 
-The `apis` sub-modules contain the definition for the different REST endpoints used to expose
-the components or group of components defined in the `components` sub-modules. The APIs are
-defined using [OpenAPI](https://www.openapis.org/). Client libraries and server stubs are
-generated from the OpenAPI specifications. The modules also contain
-[PACT](https://docs.pact.io/) contract definitions which are used to generate test drivers to
-validate server implementations, as well as server stubs that can be used by client services
-as server replacements during testing.
+The `thirdparty` module contains the module needed to package micrometer as an OSGi bundle and is
+presented as an example of how such a common API can be reused in a Spring application as well as
+in an OSGi one.
 
-> APIs are typically source controlled in their own repository and released independently to
-allow for their version to evolve independently of the implementation.
+## Sample Deployment Modules
 
-## Distributions Module
+These modules show how the Quotes and Greetings services can be deployed to different environments.
 
-The `distros` modules are used to create environment specific distributions.
+The `spring` sub-module packages the two services into a single SpringBoot application.
 
-For instance, two distribution modules exist under the `spring` sub-module to create independent
-Quotes and Greetings SpringBoot applications, which can be run at the command line or from your
-favorite IDE. Each distribution module pulls-in the proper REST endpoint API modules (`quotes` or
-`greetings`), and provides implementations for the third-party tools (logging and metrics) and
-data storage 
+The `docker` sub-module provides a single `docker-compose.yaml` file that can be used to start
+separate Docker containers from the two service images, as well as any other required external
+service (e.g., Cassandra).
 
-The `single-app` module, on the other hand, creates a single SpringBoot application that contains
-both Quotes and Greetings components and only exposes the Greetings REST endpoint.
-
-The `distros` module contains samples of how the different components could be packaged and
-deployed.
-
-Each sub-module composes and packages different components as deployable units.
-
-For instance, the `spring` module shows how the components can be wired using Spring
-to create a single SpringBoot application, or two independent ones that communicate over a REST
-endpoint.
-
-The `docker` module under `distros` shows how the SpringBoot applications can be packaged as
-Docker images and orchestrated using a single `docker-compose` file.
-
-The `osgi` module shows how the same reusable components can be packaged as OSGi bundles and
-deployed to an OSGi container like Karaf.
-
-These sub-modules should be kept in repositories that package the same components in a similar
-fashion. For instance, a repository could create a SpringBoot application that provides a REST
-endpoint for one or more components
-
-Finally, the `apis` module
-
-This is only a sample repository. Each team and application should create multiple, independently
-releasable repositories based on how they package and deliver their applications and services.
-
-The following top-level modules provide information about different independent pieces of the
-overall sample application and possible deployment options.
-
-**services**
-
-The `services` module contains the different service components. Each service component is
-packaged and deployed in different forms by the other modules.
-
-**osgi**
-
-The `osgi` module packages the components defined in the `services` as OSGi bundles that can be
-deployed as OSGi services inside an OSGi container.
-
-**spring**
-
-The `spring` module packages the `services` components as Spring Boot applications.
-
-**docker**
-
-The `docker` module packages the Spring Boot applications created by the `spring` module as
-Docker images and provides a Docker Compose configuration file to run them as a multi-service
-deployment under Docker.
-
-## Third-Party Libraries and Frameworks
-
-The code in these modules use [Immutables](https://immutables.org) to simplify the creation of
-immutable classes and objects.
-
-They also use the [Micrometer](https://micrometer.io) generic interfaces to capture metrics.
+Finally, the `karaf` sub-modules creates a Karaf Kar file that ce easily be dropped into a
+Karaf container to start both services and expose the Greetings REST endpoint.
 
 ## Building Multi-Platform
 
