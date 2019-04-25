@@ -1,0 +1,102 @@
+swagger: '2.0'
+info:
+  description: Spring Boot REST API for Quotes
+  version: 0.1.0
+  title: Quotes REST API
+  termsOfService: 'https://somewebsite.com'
+  contact:
+    name: Eric Lessard
+    url: 'https://www.connexta.com/about/'
+    email: eric.lessard@connexta.com
+  license:
+    name: Apache License Version 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+host: 'localhost:4001'
+basePath: /
+tags:
+  - name: quote-controller
+    description: Quote Controller
+paths:
+  /quote:
+    get:
+      tags:
+        - quote-controller
+      summary: Gets a random quote
+      operationId: getQuoteUsingGET
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/QuoteModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - quote-controller
+      summary: Adds a new quote
+      operationId: addQuoteUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: quote
+          description: Quote to add to the store
+          required: false
+          schema:
+            $ref: '#/definitions/AddQuoteModel'
+      responses:
+        '201':
+          description: Created
+          schema:
+            $ref: '#/definitions/QuoteModel'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+definitions:
+  AddQuoteModel:
+    type: object
+    properties:
+      author:
+        type: string
+        description: Quote's author
+        minLength: 1
+        maxLength: 50
+      content:
+        type: string
+        description: Quote's content
+        minLength: 1
+        maxLength: 250
+    title: AddQuoteModel
+    description: Information about a new quote to add
+  QuoteModel:
+    type: object
+    properties:
+      author:
+        type: string
+        description: Quote's author
+        minLength: 1
+        maxLength: 50
+      content:
+        type: string
+        description: Quote's content
+        minLength: 1
+        maxLength: 250
+      id:
+        type: integer
+        format: int32
+        description: Quote's unique ID
+    title: QuoteModel
+    description: Quote

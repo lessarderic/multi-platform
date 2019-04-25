@@ -16,8 +16,6 @@ multi-platform
 |     +- clients
 |        +- java
 |     +- server
-|        +- spring
-|        +- cxf
 +- greetings-api
 |  +- java
 |  +- rest
@@ -26,21 +24,14 @@ multi-platform
 |     +- clients
 |        +- java
 |     +- server
-|        +- spring
-|        +- cxf
-+- quotes-service
-|  +- service-impl
-|  +- platform-adaptors
-|  |  +- data-access
-|  |     +- in-memory
-|  |     +- cassandra
-|  |     +- relational
++- quotes
+|  +- impl
 |  +- distros
 |     +- spring
 |     +- docker
 |     +- osgi
-+- greetings-service
-|  +- service-impl
++- greetings
+|  +- impl
 |  +- distros
 |     +- spring
 |     +- docker
@@ -57,8 +48,8 @@ multi-platform
 ```
 
 Except for the `sample-deployments` module, each top-level module represents a separate repository.
-For instance, the `quotes-service` and `greetings-service` would be two distinct GitHub repositories
-that can be built, packaged and deployed on their own.
+For instance, the `quotes` and `greetings` would be two distinct GitHub repositories that can be
+built, packaged and deployed on their own.
 
 ## API Modules
 
@@ -70,8 +61,8 @@ The Java APIs are defined so clean OSGi bundles can be created from them.
 The REST APIs are defined using [OpenAPI](https://www.openapis.org/). Client libraries, server
 stubs, static documentation are generated from the OpenAPI specifications. This is also where
 [PACT](https://docs.pact.io/) contract definitions would exist. Those would be used to generate
-test drivers (compliance test kit, or CTK) to validate server implementations, as well as server
-mocks that can be used by client services as server replacements during testing.
+compliance test kit (CTK) to validate server implementations, as well as server mocks that can be
+used by client services as server replacements during testing.
                                              
 > APIs are typically source controlled in their own repository and released independently to
 allow for their version to change independently of the implementation.
@@ -79,7 +70,7 @@ allow for their version to change independently of the implementation.
 ## Implementation Modules
 
 Those modules contain the implementation of each service defined in the API Modules.
-They include a `service-impl` module that contains the service's business logic. The code in this
+They include an `impl` module that contains the service's business logic. The code in this
 module is written so it can be reused in different distributions and composed as needed
 using dependency injection. In order to remain deployment independent, it does not assume any
 specific dependency injection framework (Spring, Aries Blueprint, Guice, etc.) and do not use any
@@ -90,21 +81,22 @@ as logging and metrics collection are used. No specific implementation is assume
 the services to be packaged and deployed to environments that provide different implementations of
 those common services.
 
+The code in these modules also uses [Immutables](https://immutables.org) to simplify the creation of
+immutable classes and objects.
+
 To remain independent of the communication mechanism, the services do not make any assumptions
 as to how they will be called (e.g., REST, Protobuf or GraphQL endpoint, message queue, OSGi
 service call, etc.).
 
 Service implementation modules that need access to persistent storage and messaging (SQL or noSQL
 databases, caches, message brokers, etc.) provide data access objects (DAOs) and adaptors to
-abstract those away in a sub-module under `platform-adaptors`. This allows each distribution to
-select specific data stores and message brokers based on the environment they will be deployed to.
+abstract those away. This allows each distribution to select specific data stores and message
+brokers based on the environment they will be deployed to.
 
-The code in these modules also uses [Immutables](https://immutables.org) to simplify the creation of
-immutable classes and objects.
+TODO - Should DAO and other platform service abstraction layers use things like Spring Data? If so, should they exist in the same module as the rest of the business logic?
 
-> As a general rule, components that share a common object model and are part of a single
-[Bounded Context](https://www.martinfowler.com/bliki/BoundedContext.html) should be kept in a
-single repository and released together.
+> As a general rule, service implementations should be kept in a single repository and released as
+a single unit so they can be versioned and deployed independently of each other.
 
 ## Third-Party Modules
 

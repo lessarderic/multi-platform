@@ -1,3 +1,5 @@
+# This is WIP and will be removed soon, please ignore
+
 # Spring Boot Applications
 
 This module contains the different components needed to package and run the Quotes and Greetings

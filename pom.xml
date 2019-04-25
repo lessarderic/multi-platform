@@ -12,7 +12,7 @@
 
     <properties>
         <!-- Build properties -->
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.bundle.plugin.version>3.5.1</maven.bundle.plugin.version>
@@ -45,10 +45,23 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.0</version>
+                    <configuration>
+                        <release>11</release>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
     <modules>
-        <module>services</module>
-        <module>osgi</module>
-        <module>spring</module>
-        <module>docker</module>
+        <module>quotes-api</module>
+        <module>quotes</module>
     </modules>
 </project>

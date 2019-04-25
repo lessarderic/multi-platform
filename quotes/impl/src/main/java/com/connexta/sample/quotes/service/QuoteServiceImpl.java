@@ -1,4 +1,4 @@
-package quote.service.impl;
+package com.connexta.sample.quotes.service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,8 +7,8 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import quote.service.Quote;
-import quote.service.QuoteService;
+import com.connexta.sample.quotes.api.Quote;
+import com.connexta.sample.quotes.api.QuoteService;
 
 /**
  * Implementation of the {@link QuoteService} interface that creates immutable {@link Quote}
@@ -16,8 +16,6 @@ import quote.service.QuoteService;
  */
 public class QuoteServiceImpl implements QuoteService {
   private static final Logger LOGGER = LoggerFactory.getLogger(QuoteServiceImpl.class);
-
-  private final QuotesDao quotesDao;
 
   // TODO - Replace with DB
   private static final Map<Integer, Quote> QUOTES = new HashMap<>();
@@ -32,15 +30,6 @@ public class QuoteServiceImpl implements QuoteService {
             2,
             "You are your biggest obstacle, but you are also the change that you seek.",
             "Freequill"));
-  }
-
-  // TODO - Remove
-  public QuoteServiceImpl() {
-    this.quotesDao = null;
-  }
-
-  public QuoteServiceImpl(QuotesDao quotesDao) {
-    this.quotesDao = quotesDao;
   }
 
   @Override
