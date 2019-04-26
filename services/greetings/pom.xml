@@ -12,7 +12,6 @@
         <groupId>com.connexta.multiplatform</groupId>
         <artifactId>services</artifactId>
         <version>0.1.0</version>
-        <relativePath>..</relativePath>
     </parent>
 
     <modules>

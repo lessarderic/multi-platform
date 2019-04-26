@@ -13,7 +13,6 @@
         <groupId>com.connexta.multiplatform</groupId>
         <artifactId>osgi-third-party</artifactId>
         <version>0.1.0</version>
-        <relativePath>..</relativePath>
     </parent>
 
     <dependencies>

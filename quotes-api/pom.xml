@@ -12,7 +12,6 @@
         <artifactId>multi-platform</artifactId>
         <groupId>com.connexta.multiplatform</groupId>
         <version>0.1.0</version>
-        <relativePath>..</relativePath>
     </parent>
 
     <modules>
