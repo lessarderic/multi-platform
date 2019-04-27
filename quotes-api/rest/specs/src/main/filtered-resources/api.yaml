@@ -11,6 +11,8 @@ info:
   license:
     name: Apache License Version 2.0
     url: 'https://www.apache.org/licenses/LICENSE-2.0'
+schemes:
+  - http
 host: 'localhost:4001'
 basePath: /
 tags:
