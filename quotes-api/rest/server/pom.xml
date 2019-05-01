@@ -31,7 +31,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <root-package>com.connexta.sample.quotes.openapi</root-package>
+        <root.package>com.connexta.sample.quotes.openapi</root.package>
     </properties>
 
     <dependencies>

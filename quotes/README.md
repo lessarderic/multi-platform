@@ -1,6 +1,6 @@
 # Quotes Service
 
-This module contains the implementation for the Quotes Service API found in the `quotes-api`
+This module contains the implementation for the Quotes API found in the `quotes-api`
 top-level module.
 
 It contains two sub-modules, `impl` for the service implementation, and `distros` for all the
@@ -21,7 +21,7 @@ can be running the following command:
 
 ```bash
 > cd multi-platform/quotes/distros/spring
-> java -Dserver.port=4001 -jar target/spring-quotes-app-0.1.0.jar
+> java -Dserver.port=4001 -jar target/quotes-distros-spring-0.1.0.jar
 ```
 
 To test that the service is up and running, point a browser at http://localhost:4001/quote, or
@@ -29,6 +29,13 @@ run the following cURL:
 
 ```bash
 > curl -X GET "http://localhost:4001/quote" -H "accept: application/json"
+```
+
+To add a new quote:
+
+```bash
+> curl -X POST "http://localhost:4001/quote" -H "accept: */*" -H "Content-Type: application/json" \
+  -d "{ \"author\": \"Emmet Brickowski\", \"content\": \"Everything is awesome!!!\"}"
 ```
 
 ### Docker

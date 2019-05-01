@@ -11,54 +11,12 @@
     <name>Multi Platform</name>
 
     <properties>
-        <!-- Build properties -->
-        <java.version>11</java.version>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.bundle.plugin.version>3.5.1</maven.bundle.plugin.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <!-- Dependency properties -->
-        <cxf.version>3.2.8</cxf.version>
-        <immutables.version>2.7.1</immutables.version>
-        <jackson.version>2.9.8</jackson.version>
-        <micrometer.version>1.0.6</micrometer.version>
-        <slf4j.version>1.7.25</slf4j.version>
+        <!-- Gitflow Incremental Builder Properties -->
+        <gib.referenceBranch>refs/remotes/origin/master</gib.referenceBranch>
+        <gib.baseBranch>HEAD</gib.baseBranch>
+        <gib.enabled>false</gib.enabled>
+        <gib.failOnError>false</gib.failOnError>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>20.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.immutables</groupId>
-            <artifactId>value</artifactId>
-            <version>${immutables.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.0</version>
-                    <configuration>
-                        <release>11</release>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
 
     <modules>
         <module>quotes-api</module>

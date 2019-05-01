@@ -22,14 +22,14 @@ public class QuoteServiceImpl implements QuoteService {
 
   // Quotes from https://quotes-generator.com/quotes-generator.php
   static {
-    QUOTES.put(0, newQuote(0, "Why be average when you can be extraordinary?", "Avina Celeste"));
-    QUOTES.put(1, newQuote(1, "The price of greatness is responsibility.", "Winston Churchill"));
+    QUOTES.put(0, newQuote(0, "Avina Celeste", "Why be average when you can be extraordinary?"));
+    QUOTES.put(1, newQuote(1, "Winston Churchill", "The price of greatness is responsibility."));
     QUOTES.put(
         2,
         newQuote(
             2,
-            "You are your biggest obstacle, but you are also the change that you seek.",
-            "Freequill"));
+                "Freequill",
+                "You are your biggest obstacle, but you are also the change that you seek."));
   }
 
   @Override
@@ -41,12 +41,12 @@ public class QuoteServiceImpl implements QuoteService {
 
   @Override
   public Quote addQuote(final String author, final String content) {
-    Quote quote = newQuote(QUOTES.size(), content, author);
+    Quote quote = newQuote(QUOTES.size(), author, content);
     QUOTES.put(QUOTES.size(), quote);
     return quote;
   }
 
-  private static Quote newQuote(int id, String content, String author) {
+  private static Quote newQuote(int id, String author, String content) {
     return ImmutableQuoteImpl.builder().id(id).content(content).author(author).build();
   }
 }

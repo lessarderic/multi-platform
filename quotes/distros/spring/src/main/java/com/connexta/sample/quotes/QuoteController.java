@@ -2,8 +2,11 @@ package com.connexta.sample.quotes;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.connexta.sample.quotes.api.Quote;
@@ -13,16 +16,18 @@ import com.connexta.sample.quotes.openapi.model.QuoteModel;
 import com.connexta.sample.quotes.openapi.stub.QuoteApi;
 import com.google.common.base.Preconditions;
 
-import io.swagger.annotations.Api;
-
 /**
  * Spring Web controller class that exposes the {@code /quote} REST endpoint. This class' purpose is
  * to convert incoming REST requests into calls to the underlying {@link QuoteService} instance.
  *
- * <p>It also provides the REST endpoint documentation using Swagger 2 annotations.
+ * <p>Note: This class allows cross-origin from any hosts for testing purposes. The
+ * {@code @CrossOrigin} annotation should be removed or updated for production code.
  */
 @RestController
+@CrossOrigin(origins = "*")
 public class QuoteController implements QuoteApi {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(QuoteController.class);
 
     private final QuoteService quoteService;
 
@@ -54,6 +59,8 @@ public class QuoteController implements QuoteApi {
      */
     @Override
     public ResponseEntity<QuoteModel> addQuoteUsingPOST(@Valid AddQuoteModel newQuote) {
+        LOGGER.info("New Quote to add: {}", newQuote);
+
         return new ResponseEntity<>(createQuoteModel(quoteService.addQuote(newQuote.getAuthor(),
                 newQuote.getContent())), HttpStatus.OK);
     }

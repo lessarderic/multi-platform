@@ -23,6 +23,7 @@
     <inceptionYear>2019</inceptionYear>
     <organization>
         <name>Connexta</name>
+        <url>https://connexta.com/</url>
     </organization>
     <licenses>
         <license>
@@ -38,8 +39,6 @@
     <packaging>pom</packaging>
 
     <properties>
-        <root.package>com.connexta.sample.quotes</root.package>
-
         <!--  Default URL properties -->
         <codice.scm.connection.url/>
         <snapshots.repository.url/>
@@ -112,6 +111,7 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
+            <!-- TODO - Should this really go here? -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-parent</artifactId>

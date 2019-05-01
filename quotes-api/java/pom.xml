@@ -20,8 +20,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>quotes-api</artifactId>
         <groupId>com.connexta.multiplatform</groupId>
+        <artifactId>quotes-api</artifactId>
         <version>0.1.0</version>
     </parent>
 

@@ -12,7 +12,6 @@ multi-platform
 |  +- java
 |  +- rest
 |     +- specs
-|     +- docs
 |     +- clients
 |        +- java
 |     +- server
@@ -20,7 +19,6 @@ multi-platform
 |  +- java
 |  +- rest
 |     +- specs
-|     +- docs
 |     +- clients
 |        +- java
 |     +- server
